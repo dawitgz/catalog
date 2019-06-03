@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Add New Item</title>
+</head>
+<body>
+<form action="{{ url_for('addItem') }}" method='POST'>
+	Name<br/><input type="text" name="name" required><br/><br/>
+	Description<br/><input type="text" name="description"><br/><br/>
+	Category<br/>
+	<select name='selectedcategory' required>
+		{% for category in categories %}
+			<option value='{{category.name}}'>{{category.name}}</option>
+		{% endfor %}
+	</select><br/><br/>
+	<input type="submit" name="submit" value="Create New">
+</form>
+	<a href="/catalog">Cancel</a>
+</body>
+</html>

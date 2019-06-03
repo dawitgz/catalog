@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Edit Item</title>
+</head>
+<body>
+	<h2>Delete Item</h2>
+	<p>Are you sure you want to delete <i>{{ item_name }}</i> from the {{ category_name }} category?</p>
+<form action="{{ url_for('deleteItem', category_name=category_name, item_name=item_name) }}" method="POST">
+	<input type="submit" name="Delete" value='Delete'>
+</form>
+	<a href="{{ url_for('showCategoryItems', category_name=category_name) }}">Cancel</a>
+</body>
+</html>

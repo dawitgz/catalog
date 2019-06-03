@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Catalog App</title>
+</head>
+<body>
+<h2><a href='/'>Catalog App</a></h2>
+<table>
+	<thead>
+		<tr>
+			<th style='text-align: left'>Categories</th>
+			<th>{{ selected_category }}  Items ({{ category_items|length }} items)</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr valign="top">
+			<td width='200px'>
+				<div>
+					{% for category in categories %}
+						<p>
+							<a href="{{ url_for('showCategoryItems', category_name=category.name)}}"> 
+								{{ category.name }}
+							</a>
+						</p>
+					{% endfor %}
+				</div>	
+			</td>
+			<td>
+				<div>
+					<!-- <p><a href="{{ url_for('createCategoryItem', category_name=selected_category) }}"><i>Create New</i></a></p> -->
+					{% for item in category_items %}
+						<p>
+						<a href="{{ url_for('showItem', category_name=item.category.name, item_name=item.name) }}">	
+						{{ item.name }}</a>
+						
+						</p>
+					{% endfor %}
+				</div>
+			</td>
+		</tr>
+	</tbody>
+</table>
+</body>
+</html>

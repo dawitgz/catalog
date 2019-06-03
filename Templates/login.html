@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html itemscope itemtype="http://schema.org/Article">
+<head>
+	<!-- NEW GOOGLE SERVER SIDE FLOW -->
+	<!-- https://developers.google.com/identity/sign-in/web/server-side-flow -->
+  <!-- BEGIN Pre-requisites -->
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js">
+  </script>
+  <script src="https://apis.google.com/js/client:platform.js?onload=start" async defer>
+  </script>
+  <!-- END Pre-requisites -->
+<script>
+      function start() {
+        gapi.load('auth2', function () {
+          auth2 = gapi.auth2.init({
+            client_id: '1068591135852-p248tha278atm6hbacjaof59tfh4nm7q',
+          });
+        });
+      }
+    </script>
+<!-- END PRE-REQUISITES FOR GOOGLE SIGN IN -->
+
+
+</head>
+
+
+<body>  
+
+
+<!-- GOOGLE PLUS SIGN IN BUTTON-->
+
+<button id="signinButton">Signin with Google</button>
+<a href='/gdisconnect'><button id="signoutButton" style='display:none'>Logout</button></a>
+    <script>
+      $('#signinButton').click(function () {
+      	auth2.grantOfflineAccess().then(signInCallback);
+        function signInCallback(authResult) {
+          if (authResult['code']) {
+            $('#signinButton').attr('style', 'display:none');
+            $('#signoutButton').attr('style', 'display:inline');
+            $.ajax({
+              type: 'POST',
+              url: '/gconnect?state={{STATE}}',
+              processData: false,
+              data: authResult['code'],
+              contentType: 'application/octet-stream; charset=utf-8',
+              success: function (result) {
+                if (result) {
+                  $('#result').html('Login Successful!</br>' + result + '</br>Redirecting...');
+                  setTimeout(function () {
+                    window.location.href = "/";
+                  }, 4000);
+                } else if (authResult['error']) {
+                  console.log('There was an error: ' + authResult['error']);
+                } else {
+                  $('#result').html('Failed to make a server-side call. Check your configuration and console.');
+                }
+              }
+            });
+          }
+        }
+        
+      })
+    </script>
+<!--END GOOGLE PLUS SIGN IN BUTTON -->
+<div id='result'></div>
+  </body>
+
+  </html>
