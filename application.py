@@ -24,8 +24,6 @@ app.secret_key = '_it08kt1JyMPqr12r_COJdF2'
 
 tempuser = User(name='Temp User', email='user@temp.com', picture='') 
 
-#engine = create_engine('postgresql://catalog:catalog@localhost/catalog', connect_args={'check_same_thread': False})
-#app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///catalog.db'
 engine = create_engine('postgresql://catalog:catalog@localhost/catalog')
 
 Base.metadata.bind = engine
