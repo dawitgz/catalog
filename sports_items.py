@@ -3,7 +3,7 @@ from sqlalchemy.orm import sessionmaker
  
 from database_setup import SportItem, Base, Category, User
  
-engine = create_engine('sqlite:///catalog.db')
+engine = create_engine('postgresql://catalog:catalog@localhost/catalog')
 # Bind the engine to the metadata of the Base class so that the
 # declaratives can be accessed through a DBSession instance
 Base.metadata.bind = engine
@@ -109,4 +109,4 @@ category9 = Category(name = "Skating")
 session.add(category9)
 session.commit()
 
-print "Initial data loaded!"
+print("Initial data loaded!")

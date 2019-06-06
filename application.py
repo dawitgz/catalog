@@ -16,14 +16,17 @@ import json
 from flask import make_response
 import requests
 
-CLIENT_ID = json.loads(open('client_secrets.json', 'r').read())['web']['client_id']
+CLIENT_ID = json.loads(open('/var/www/html/client_secrets.json', 'r').read())['web']['client_id']
 	
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder='Templates')
+app.secret_key = '_it08kt1JyMPqr12r_COJdF2'
 
 tempuser = User(name='Temp User', email='user@temp.com', picture='') 
 
-engine = create_engine('sqlite:///catalog.db', connect_args={'check_same_thread': False})
+#engine = create_engine('postgresql://catalog:catalog@localhost/catalog', connect_args={'check_same_thread': False})
+#app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///catalog.db'
+engine = create_engine('postgresql://catalog:catalog@localhost/catalog')
 
 Base.metadata.bind = engine
  
@@ -43,7 +46,7 @@ def showCatalog():
 
 @app.route('/login')
 def showLogin():
-	state = ''.join(random.choice(string.ascii_uppercase + string.digits) for x in xrange(32))
+	state = ''.join(random.choice(string.ascii_uppercase + string.digits) for x in range(32))
 	login_session['state'] = state
 	return render_template('login.html', STATE = state)
 
@@ -59,7 +62,7 @@ def gconnect():
 
     try:
         # Upgrade the authorization code into a credentials object
-        oauth_flow = flow_from_clientsecrets('client_secrets.json', scope='')
+        oauth_flow = flow_from_clientsecrets('/var/www/html/client_secrets.json', scope='')
         oauth_flow.redirect_uri = 'postmessage'
         credentials = oauth_flow.step2_exchange(code)
     except FlowExchangeError:
@@ -92,7 +95,7 @@ def gconnect():
     if result['issued_to'] != CLIENT_ID:
         response = make_response(
             json.dumps("Token's client ID does not match app's."), 401)
-        print "Token's client ID does not match app's."
+        print("Token's client ID does not match app's.")
         response.headers['Content-Type'] = 'application/json'
         return response
 
@@ -133,7 +136,7 @@ def gconnect():
     output += login_session['picture']
     output += ' " style = "width: 300px; height: 300px;border-radius: 150px;-webkit-border-radius: 150px;-moz-border-radius: 150px;"> '
     flash("you are now logged in as %s" % login_session['username'])
-    print "done!"
+    print("done!")
     return output
 
 @app.route('/gdisconnect')
@@ -151,8 +154,8 @@ def gdisconnect():
 	h = httplib2.Http()
 	result = h.request(url, 'GET')[0]
 
-	print 'result is '
-	print result
+	print('result is ')
+	print(result)
 	if result['status'] == '200':
 		del login_session['access_token']
 		del login_session['gplus_id']
@@ -294,7 +297,6 @@ def deleteItem(category_name, item_name):
 		return redirect(url_for('showCategoryItems', category_name=category_name))
 
 if __name__ == '__main__':
-
-    app.secret_key = 'secret_key'
+    app.config['SESSION_TYPE'] = 'filesystem'
     app.debug = True
-    app.run(host='0.0.0.0', port=8000)
+    app.run(host='3.91.25.159')
